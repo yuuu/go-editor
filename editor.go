@@ -22,15 +22,22 @@ const DEFAULT_EDITOR = "vi"
 // NewEditor ...
 func NewEditor(cmd string) *Editor {
 	var editorCmd string
+	var err error
 
-	if cmd != "" {
-		editorCmd = cmd
-	} else {
+	editorCmd = cmd
+	err = nil
+	_, err = exec.LookPath(editorCmd)
+	if err != nil {
 		osEditorCmd := os.Getenv("EDITOR")
-		if editorCmd != "" {
+		if osEditorCmd != "" {
 			editorCmd = osEditorCmd
 		} else {
 			editorCmd = DEFAULT_EDITOR
+		}
+		err = nil
+		_, err = exec.LookPath(editorCmd)
+		if err != nil {
+			return nil
 		}
 	}
 
